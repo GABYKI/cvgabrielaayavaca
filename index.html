@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pulso: que ninguna dosis se quede olvidada</title>
-<meta name="description" content="Pulso es una app que recuerda los medicamentos de personas con enfermedades crónicas y avisa a su familia si se olvida una dosis.">
+<meta name="description" content="Pulso es una página web para personas con hipertensión o diabetes: organiza tus medicinas, anota tu presión o glucosa y comparte el resumen con tu familia.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💊</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,10 +17,10 @@
   <a class="logo" href="#inicio" aria-label="Pulso, inicio"><span class="logo-cap"></span>Pulso</a>
   <nav>
     <a href="#problema">El problema</a>
-    <a href="#solucion">Cómo funciona</a>
-    <a href="#beneficios">Beneficios</a>
-    <a href="#tecnologia">Tecnología</a>
-    <a class="btn-nav" href="#contacto">Súmate</a>
+    <a href="#solucion">Mi pastillero</a>
+    <a href="#registro">Mi registro</a>
+    <a href="#cuidate">Cuídate</a>
+    <a class="btn-nav" href="#contacto">Compartir</a>
   </nav>
 </header>
 
@@ -43,10 +43,10 @@
   <div class="hero-texto">
     <p class="sello">ODS 3 · Salud y bienestar</p>
     <h1>Que ninguna dosis se quede olvidada</h1>
-    <p class="lead">Pulso recuerda los medicamentos de quienes viven con hipertensión o diabetes. Si una dosis se salta, avisa a su familia.</p>
+    <p class="lead">Una página para quienes viven con hipertensión o diabetes: anota tus medicinas, marca cada dosis, registra tu presión o glucosa y comparte el resumen con tu familia.</p>
     <div class="acciones">
       <a class="btn" href="#solucion">Abre el pastillero</a>
-      <a class="btn btn-claro" href="#contacto">Quiero participar</a>
+      <a class="btn btn-claro" href="#registro">Anota tu presión</a>
     </div>
   </div>
 </section>
@@ -56,7 +56,7 @@
     <h2>El tratamiento existe. Lo que falla es el día a día.</h2>
     <div class="problema-grid">
       <div class="dato">
-        <p class="cifra"><span class="contador" data-meta="1280">0</span><small> millones</small></p>
+        <p class="cifra"><span class="contador" data-meta="1280">1.280</span><small> millones</small></p>
         <p>de adultos de 30 a 79 años viven con hipertensión en el mundo, según la OMS.</p>
       </div>
       <div class="dato">
@@ -74,16 +74,32 @@
 
 <section class="seccion" id="solucion">
   <div class="contenedor oculto">
-    <h2>Una semana de medicinas, a la vista de todos</h2>
+    <h2>Tu semana de medicinas, a la vista de todos</h2>
     <ol class="pasos">
-      <li><strong>Se registra el tratamiento</strong> con ayuda de un familiar o del centro de salud.</li>
-      <li><strong>Pulso avisa a la hora exacta</strong> con sonido, letra grande y SMS si no hay internet.</li>
-      <li><strong>Si se omite una dosis</strong>, un familiar de confianza recibe el aviso y puede llamar.</li>
-      <li><strong>El médico ve el historial</strong> de presión y glucosa antes de la consulta.</li>
+      <li><strong>Anota tus medicinas</strong> con su dosis y la hora a la que las tomas.</li>
+      <li><strong>Abre el compartimento</strong> del día cuando tomes tu dosis.</li>
+      <li><strong>Si pasa un día sin abrir</strong>, el compartimento se pone rojo para que lo notes.</li>
+      <li><strong>Comparte el resumen</strong> con tu familia o tu médico por WhatsApp.</li>
     </ol>
 
     <div class="demo">
-      <p class="indicacion">Pruébalo: toca un día para abrir su compartimento.</p>
+      <form class="med-form" id="med-form" novalidate>
+        <div class="campo">
+          <label for="med-nombre">Medicina y dosis</label>
+          <input id="med-nombre" type="text" maxlength="40" placeholder="Ej. Losartán 50 mg">
+        </div>
+        <div class="campo">
+          <label for="med-hora">Hora</label>
+          <input id="med-hora" type="time">
+        </div>
+        <button class="btn btn-mini" type="submit">Agregar</button>
+      </form>
+      <p class="msg-form" id="msg-med" role="status" aria-live="polite"></p>
+
+      <ul class="meds" id="meds"></ul>
+      <p class="proxima" id="proxima"></p>
+
+      <p class="indicacion">Toca el día de hoy para abrir su compartimento cuando tomes tu dosis.</p>
       <div class="pastillero" id="pastillero">
         <div class="comp"><span class="pil"></span><button class="tapa" aria-label="Abrir el compartimento del lunes">L</button></div>
         <div class="comp"><span class="pil"></span><button class="tapa" aria-label="Abrir el compartimento del martes">M</button></div>
@@ -96,11 +112,47 @@
       <div class="demo-pie">
         <p class="racha" id="racha">0 de 7 dosis tomadas</p>
         <div class="demo-botones">
-          <button class="btn btn-mini" id="olvido" type="button">Simular un olvido</button>
-          <button class="btn btn-mini btn-claro" id="vaciar" type="button">Empezar de nuevo</button>
+          <button class="btn btn-mini btn-claro" id="vaciar" type="button">Empezar semana nueva</button>
         </div>
       </div>
-      <div class="aviso" id="aviso" role="status" aria-live="polite">Rosa todavía no abre ningún compartimento.</div>
+      <div class="aviso" id="aviso" role="status" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<section class="seccion sin-arriba" id="registro">
+  <div class="contenedor oculto">
+    <h2>Anota tu presión o tu glucosa</h2>
+    <div class="demo">
+      <form class="reg-form" id="reg-form" novalidate>
+        <div class="campo">
+          <label for="tipo">¿Qué mediste?</label>
+          <select id="tipo">
+            <option value="presion">Presión arterial</option>
+            <option value="glucosa">Glucosa</option>
+          </select>
+        </div>
+        <div class="campo" id="campo-sis">
+          <label for="sis">Alta (sistólica)</label>
+          <input id="sis" type="number" inputmode="numeric" placeholder="120">
+        </div>
+        <div class="campo" id="campo-dia">
+          <label for="dia">Baja (diastólica)</label>
+          <input id="dia" type="number" inputmode="numeric" placeholder="80">
+        </div>
+        <div class="campo" id="campo-glu" hidden>
+          <label for="glu">En ayunas (mg/dL)</label>
+          <input id="glu" type="number" inputmode="numeric" placeholder="95">
+        </div>
+        <button class="btn btn-mini" type="submit">Guardar</button>
+      </form>
+      <p class="msg-form" id="msg-reg" role="status" aria-live="polite"></p>
+
+      <ul class="lecturas" id="lecturas"></ul>
+      <div class="demo-botones">
+        <button class="btn btn-mini btn-claro" id="borrar-lect" type="button">Borrar registros</button>
+      </div>
+      <p class="descargo">Esta herramienta no diagnostica ni reemplaza a tu médico. Si te sientes mal o tus valores se mantienen altos, consulta.</p>
     </div>
   </div>
 </section>
@@ -110,23 +162,23 @@
     <h2>Quién gana cuando nadie se olvida</h2>
     <div class="recetas">
       <article class="receta r1"><h3>Pacientes</h3><p>Menos olvidos, menos sustos y más autonomía para cuidarse sin depender de la memoria.</p></article>
-      <article class="receta r2"><h3>Familias</h3><p>Saben si mamá o papá tomó su medicina sin tener que llamar cada día para preguntar.</p></article>
-      <article class="receta r3"><h3>Centros de salud</h3><p>Datos reales entre consultas para ajustar el tratamiento a tiempo.</p></article>
+      <article class="receta r2"><h3>Familias</h3><p>Reciben el resumen de la semana sin tener que llamar cada día para preguntar.</p></article>
+      <article class="receta r3"><h3>Centros de salud</h3><p>Un historial de presión y glucosa para llevar a la consulta y ajustar el tratamiento a tiempo.</p></article>
       <article class="receta r4"><h3>El sistema de salud</h3><p>Prevenir una crisis cuesta mucho menos que atenderla en emergencias.</p></article>
     </div>
   </div>
 </section>
 
-<section class="seccion" id="tecnologia">
+<section class="seccion" id="cuidate">
   <div class="contenedor oculto">
-    <h2>Hecha para funcionar donde hay poca señal</h2>
+    <h2>Hábitos pequeños que ayudan al tratamiento</h2>
     <div class="chips" id="chips">
-      <button type="button" data-desc="Funciona en teléfonos básicos y guarda los datos sin conexión hasta que vuelve la señal." aria-pressed="true">App móvil liviana</button>
-      <button type="button" data-desc="Los recordatorios llegan aunque la persona no tenga datos móviles.">SMS y notificaciones</button>
-      <button type="button" data-desc="Muestra el centro de salud o la farmacia más cercana y cómo llegar.">Geolocalización</button>
-      <button type="button" data-desc="Historial seguro, con permisos distintos para la familia y para el personal médico.">Base de datos en la nube</button>
-      <button type="button" data-desc="Detecta cuando la presión sube o las dosis se saltan seguido, y avisa a tiempo.">Análisis de patrones</button>
-      <button type="button" data-desc="Letra grande, alto contraste y mensajes de voz pensados para adultos mayores.">Interfaz accesible</button>
+      <button type="button" data-desc="Toma tu medicina a la misma hora y junto a algo que ya haces, como el desayuno. Así es más difícil olvidarla." aria-pressed="true">Misma hora, mismo gesto</button>
+      <button type="button" data-desc="Prueba la comida antes de echarle sal y evita embutidos, sopas de sobre y snacks salados: ayudan a bajar la presión.">Menos sal</button>
+      <button type="button" data-desc="Caminar unos 30 minutos casi todos los días mejora la presión y el azúcar en la sangre.">Muévete</button>
+      <button type="button" data-desc="Mide tu presión o glucosa a la misma hora, anótala aquí y lleva el resumen a cada consulta.">Controles</button>
+      <button type="button" data-desc="Dolor fuerte en el pecho, dolor de cabeza intenso, visión borrosa, confusión o falta de aire: llama al 911 o ve a emergencias.">Señales de alerta</button>
+      <button type="button" data-desc="Aunque te sientas bien, no suspendas ni cambies tu medicina sin hablar con tu médico.">No la dejes solo</button>
     </div>
     <p class="chips-desc" id="chips-desc" aria-live="polite"></p>
   </div>
@@ -135,15 +187,18 @@
 <section class="seccion cierre" id="contacto">
   <div class="contenedor cierre-grid oculto">
     <div>
-      <h2>Ayúdanos a probar Pulso</h2>
-      <p>Buscamos familias, centros de salud y voluntarios para la primera prueba piloto. Déjanos tu correo y te escribimos.</p>
+      <h2>Que tu familia esté al tanto</h2>
+      <p>Pulso arma un resumen con tus medicinas, las dosis de la semana y tus últimas lecturas. Lo envías por WhatsApp o lo copias.</p>
     </div>
     <form id="form" novalidate>
-      <label for="nombre">Nombre</label>
+      <label for="nombre">Nombre de la persona</label>
       <input id="nombre" name="nombre" type="text" autocomplete="name" required placeholder="Ej. Rosa Andrade">
-      <label for="correo">Correo electrónico</label>
-      <input id="correo" name="correo" type="email" autocomplete="email" required placeholder="rosa@ejemplo.com">
-      <button class="btn" type="submit">Quiero participar</button>
+      <label for="telefono">WhatsApp de tu familiar (opcional)</label>
+      <input id="telefono" name="telefono" type="tel" inputmode="tel" autocomplete="tel" placeholder="Ej. 0991234567">
+      <div class="cierre-botones">
+        <button class="btn" type="submit">Enviar por WhatsApp</button>
+        <button class="btn btn-claro" id="copiar" type="button">Copiar resumen</button>
+      </div>
       <p class="msg-form" id="msg-form" role="status" aria-live="polite"></p>
     </form>
   </div>
